@@ -3,7 +3,7 @@
 # Version: 1.0
 # Created On: 3/5/2015
 # Created By: rcguy
-# Description: Installs the Linux TeamSpeak 3 Server - x64
+# Description: Installs the Linux TeamSpeak 3 Server
 # Tested on: Ubuntu Server 14.10 x64 / VPS / 1 Cores / 512MB RAM / 20 GB SSD
 
 # user to run the ts3server and where to install it
@@ -28,15 +28,25 @@ else
 	exit 1
 fi
 
-# install teamspeak3-server_linux
+# check if we need 64bit or 32bit binaries
+A=$(arch)
+if [ "$A" = "x86_64" ]; then
+	URL="http://dl.4players.de/ts/releases/3.0.11.2/teamspeak3-server_linux-amd64-3.0.11.2.tar.gz"
+elif [ "$A" = "i386" ]; then
+	URL="http://dl.4players.de/ts/releases/3.0.11.2/teamspeak3-server_linux-x86-3.0.11.2.tar.gz"
+elif [ "$A" = "i686" ]; then
+	URL="http://dl.4players.de/ts/releases/3.0.11.2/teamspeak3-server_linux-x86-3.0.11.2.tar.gz"
+fi
+
+# download and install ts3server
 echo "Installing the TeamSpeak 3 server to '$TS3_DIR'"
-if wget -q http://dl.4players.de/ts/releases/3.0.11.2/teamspeak3-server_linux-amd64-3.0.11.2.tar.gz; then
-	tar -xzf teamspeak3-server_linux-amd64*.tar.gz
-	mv teamspeak3-server_linux-amd64/* $TS3_DIR
+if wget -q $URL; then
+	tar -xzf teamspeak3-server_linux*.tar.gz
+	mv teamspeak3-server_linux*/* $TS3_DIR
 	chown $TS3_USER:$TS3_USER $TS3_DIR -R
-	rm -rf teamspeak3-server_linux-amd64*.tar.gz teamspeak3-server_linux-amd64/
+	rm -rf teamspeak3-server_linux*.tar.gz teamspeak3-server_linux-*/
 else
-	echo -e "\n ERROR!!! Failed to download teamspeak3-server_linux-amd64\n"
+	echo -e "\n ERROR!!! Failed to download teamspeak3-server_linux\n"
 	exit 1
 fi
 
