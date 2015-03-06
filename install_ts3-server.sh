@@ -10,6 +10,13 @@
 TS3_USER="teamspeak3"
 TS3_DIR="/opt/ts3-server"
 
+# are we root?
+if	[ "$EUID" -ne 0 ]
+	then
+	echo -e "\nERROR!!! SCRIPT MUST RUN WITH ROOT PRIVILAGES\n"
+	exit 1
+fi
+
 # exit with a non-zero status when there is an uncaught error
 set -e
 
@@ -22,7 +29,7 @@ else
 fi
 
 # install teamspeak3-server_linux
-echo "Installing the TeamSpeak 3 Server to '$TS3_DIR'"
+echo "Installing the TeamSpeak 3 server to '$TS3_DIR'"
 if wget -q http://dl.4players.de/ts/releases/3.0.11.2/teamspeak3-server_linux-amd64-3.0.11.2.tar.gz; then
 	tar -xzf teamspeak3-server_linux-amd64*.tar.gz
 	mv teamspeak3-server_linux-amd64/* $TS3_DIR
@@ -74,9 +81,9 @@ EOF
 # initialize the ts3server to generate the ServerAdmin Privilege Key
 chmod a+x /etc/init.d/ts3server
 update-rc.d ts3server defaults >/dev/null 2>&1
-echo "Starting the TeamSpeak 3 Server..."
+echo "Starting the TeamSpeak 3 server..."
 /etc/init.d/ts3server start >/tmp/ts3 2>&1
-sleep 5
+sleep 3
 
 # finish
 IMPORTANT=$(cat /tmp/ts3 | sed '1,3d;9,13d;/^$/d')
