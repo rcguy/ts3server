@@ -1,6 +1,7 @@
 #!/bin/bash
+# Name: install_ts3-server.sh
 # Version: 1.0
-# Created: 3/5/2015
+# Created On: 3/5/2015
 # Created By: rcguy
 # Description: Installs the Linux TeamSpeak 3 Server - x64
 # Tested on: Ubuntu Server 14.10 x64 / VPS / 1 Cores / 512MB RAM / 20 GB SSD
@@ -59,11 +60,12 @@ EOF
 # initialize the ts3-server to generate the ServerAdmin Privilege Key
 chmod a+x /etc/init.d/ts3server
 update-rc.d ts3server defaults >/dev/null 2>&1
+echo "Starting the TeamSpeak 3 Server"
 /etc/init.d/ts3server start >/tmp/ts3 2>&1
 sleep 5
-echo "Installed the TeamSpeak 3 Server!"
+echo "Installed the TeamSpeak 3 Server"
 
-# Finish
+# finish
 IMPORTANT=$(cat /tmp/ts3 | sed '1,3d;9,13d;/^$/d')
 echo -e "\n$IMPORTANT"
 echo -e "\nCompleted! You should probably reboot the system now\n"
