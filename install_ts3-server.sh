@@ -4,7 +4,7 @@
 # Created On: 3/5/2015
 # Created By: rcguy
 # Description: Automagically installs the Linux TeamSpeak 3 Server
-# Tested on: Ubuntu Server 14.10 / x64 / x86 / VPS / 1 Cores / 1GB RAM / 20 GB SSD
+# Tested on: Ubuntu Server 14.10 / x64 / x86 / VPS / 2 Cores / 2GB RAM / 20 GB SSD
 
 # ==> USER VARIABLES <==
 # user to run the ts3server and where to install it
@@ -115,8 +115,8 @@ EXTERNAL_IP=$(wget -qO - http://geoip.ubuntu.com/lookup | sed -n -e 's/.*<Ip>\(.
 IMPORTANT=$(cat /tmp/ts3 | sed '1,3d;9,13d;/^$/d')
 echo "$IMPORTANT" > $TS3_DIR/ServerAdmin_Privilege_Key.txt # save the ServerAdmin Privilege Key for easy future reference
 echo "ServerAdmin info saved to: '$TS3_DIR/ServerAdmin_Privilege_Key.txt'"
-echo -e "\n$IMPORTANT"
-echo -e "\nCompleted! You should probably configure the server now, Use the desktop client for easy administration"
-echo -e "\nYour servers external IP Address is: '$EXTERNAL_IP'"
+echo -e "\n$IMPORTANT\n"
+echo -e "Completed! You should probably configure the server now\nUse the desktop client for easy administration"
+echo -e "Your servers external IP Address is: '$EXTERNAL_IP'\n"
 rm /tmp/ts3
 exit 0
