@@ -77,13 +77,12 @@ cat > /etc/init.d/ts3server <<EOF
 # Required-Stop: \$network
 # Default-Start: 2 3 4 5
 # Default-Stop: 0 1 6
-# Description: Starts/Stops/Restarts the TeamSpeak 3 server
+# Description: Runs the ts3server_startscript.sh as the user defined below
 ### END INIT INFO
 
-# System Info
+# Variables
 TS_USER=$TS3_USER
-TS_ROOT_DIR=$TS3_DIR
-TS_DAEMON=\$TS_ROOT_DIR/ts3server_startscript.sh
+TS_DAEMON=$TS_DIR/ts3server_startscript.sh
 
 # Check if variables are set correctly
 A=\$(cat /etc/passwd | grep -c \$TS_USER:)
@@ -91,15 +90,12 @@ A=\$(cat /etc/passwd | grep -c \$TS_USER:)
 if [ \$? -ne 0 ]; then
     echo -e "\n ERROR!!! The user '\$TS_USER' does not exist!\n"
     exit 1
-elif [ ! -d "\$TS_ROOT_DIR" ]; then
-    echo -e "\n ERROR!!! Your set directory '\$TS_ROOT_DIR' does not exist!\n"
-    exit 1
 elif [ ! -f "\$TS_DAEMON" ]; then
     echo -e "\n ERROR!!! The daemon '\$TS_DAEMON' does not exist!\n"
     exit 1
 fi
 
-# Start TeamSpeak 3 server as set user
+# Start the TeamSpeak 3 server
 sudo -u \$TS_USER \$TS_DAEMON \$1
 
 exit 0;
