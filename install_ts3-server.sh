@@ -4,7 +4,7 @@
 # Created On: 3/5/2015
 # Created By: rcguy
 # Description: Installs the Linux TeamSpeak 3 Server
-# Tested on: Ubuntu Server 14.10 x64 / VPS / 1 Cores / 512MB RAM / 20 GB SSD
+# Tested on: Ubuntu Server 14.10 / x64 / x86 / VPS / 1 Cores / 1GB RAM / 20 GB SSD
 
 # ==> USER VARIABLES <==
 # user to run the ts3server and where to install it
@@ -115,7 +115,7 @@ sleep 3
 # finish
 IMPORTANT=$(cat /tmp/ts3 | sed '1,3d;9,13d;/^$/d')
 echo "$IMPORTANT" > $TS3_DIR/ServerAdmin_Privilege_Key.txt # save the ServerAdmin Privilege Key for easy future reference
-echo "ServerAdmin info saved to '$TS3_DIR/ServerAdmin_Privilege_Key.txt'"
+echo "ServerAdmin info saved to: '$TS3_DIR/ServerAdmin_Privilege_Key.txt'"
 echo -e "\n$IMPORTANT"
 echo -e "\nCompleted! You should probably reboot the system now\n"
 rm /tmp/ts3
