@@ -14,7 +14,7 @@ Change the user variables if necessary
 ```bash
 nano install_ts3-server.sh
 ```
-Make the script excutable
+Make the script executable
 ```bash
 chmod a+x install_ts3-server.sh
 ```
