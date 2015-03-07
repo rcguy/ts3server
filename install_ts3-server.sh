@@ -3,7 +3,7 @@
 # Version: 1.0
 # Created On: 3/5/2015
 # Created By: rcguy
-# Description: Installs the Linux TeamSpeak 3 Server
+# Description: Automagically installs the Linux TeamSpeak 3 Server
 # Tested on: Ubuntu Server 14.10 / x64 / x86 / VPS / 1 Cores / 1GB RAM / 20 GB SSD
 
 # ==> USER VARIABLES <==
@@ -20,7 +20,7 @@ if	[ "$EUID" -ne 0 ]; then
 	exit 1
 fi
 
-# official download urls
+# official download urls - updated on: 3/7/2015
 X64_M1="http://dl.4players.de/ts/releases/3.0.11.2/teamspeak3-server_linux-amd64-3.0.11.2.tar.gz"
 X64_M2="http://teamspeak.gameserver.gamed.de/ts3/releases/3.0.11.2/teamspeak3-server_linux-amd64-3.0.11.2.tar.gz"
 X86_M1="http://dl.4players.de/ts/releases/3.0.11.2/teamspeak3-server_linux-x86-3.0.11.2.tar.gz"
@@ -114,7 +114,7 @@ sleep 3
 
 # finish
 IMPORTANT=$(cat /tmp/ts3 | sed '1,3d;9,13d;/^$/d')
-echo "$IMPORTANT" > $TS3_DIR/ServerAdmin_Privilege_Key.txt # save the ServerAdmin Privilege Key for easy future reference
+cat "$IMPORTANT" > $TS3_DIR/ServerAdmin_Privilege_Key.txt # save the ServerAdmin Privilege Key for easy future reference
 echo "ServerAdmin info saved to: '$TS3_DIR/ServerAdmin_Privilege_Key.txt'"
 echo -e "\n$IMPORTANT"
 echo -e "\nCompleted! You should probably reboot the system now\n"
