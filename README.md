@@ -1,4 +1,4 @@
-##Auto Install the Linux TeamSpeak 3 Server
+##Auto Install the Linux TeamSpeak 3 Server on Ubuntu
 ### What this script does:
 - Creates a new user to run the TeamSpeak 3 Server
 - Downloads and installs the server
