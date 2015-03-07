@@ -22,3 +22,7 @@ Run the script
 ```bash
 sudo ./install_ts3-server.sh
 ```
+To start, stop, restart, or check the status of the ts3-server use
+```bash
+sudo service ts3server {start|stop|restart|status}
+```
