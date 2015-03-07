@@ -21,7 +21,7 @@ if	[ "$EUID" -ne 0 ]; then
 fi
 
 # official download urls
-X64_M1="htp://dl.4players.de/ts/releases/3.0.11.2/teamspeak3-server_linux-amd64-3.0.11.2.tar.gz"
+X64_M1="http://dl.4players.de/ts/releases/3.0.11.2/teamspeak3-server_linux-amd64-3.0.11.2.tar.gz"
 X64_M2="http://teamspeak.gameserver.gamed.de/ts3/releases/3.0.11.2/teamspeak3-server_linux-amd64-3.0.11.2.tar.gz"
 X86_M1="http://dl.4players.de/ts/releases/3.0.11.2/teamspeak3-server_linux-x86-3.0.11.2.tar.gz"
 X86_M2="http://teamspeak.gameserver.gamed.de/ts3/releases/3.0.11.2/teamspeak3-server_linux-x86-3.0.11.2.tar.gz"
@@ -41,6 +41,7 @@ fi
 
 # functions
 function install_ts3-server {
+mkdir -p $TS3_DIR
 tar -xzf teamspeak3-server_linux*.tar.gz
 mv teamspeak3-server_linux*/* $TS3_DIR
 chown $TS3_USER:$TS3_USER $TS3_DIR -R
@@ -56,7 +57,7 @@ else
 fi
 
 # download and install the ts3server
-echo "Installing the TeamSpeak 3 server to '$TS3_DIR'"
+echo "Installing the TeamSpeak 3 server to: '$TS3_DIR'"
 if wget -q $URL1; then
 	install_ts3-server
 elif wget -q $URL2; then
