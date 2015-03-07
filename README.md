@@ -10,7 +10,7 @@ Download or copy the script and paste it into a new file
 ```bash
 wget https://raw.githubusercontent.com/rcguy/install_ts3-server/master/install_ts3-server.sh
 ```
-Open the script and change the user variables if necessary
+Change the user variables if necessary
 ```bash
 nano install_ts3-server.sh
 ```
