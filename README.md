@@ -2,7 +2,7 @@
 ### What this script does:
 - Creates a new user to run the TeamSpeak 3 Server
 - Downloads and installs the server
-- Creates an init.d startup script
+- Creates an init.d start-up script
 - Starts the server
 
 ### How to use:
