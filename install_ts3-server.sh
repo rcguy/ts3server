@@ -10,6 +10,7 @@
 # user to run the ts3server and where to install it
 TS3_USER="teamspeak3"
 TS3_DIR="/opt/ts3-server"
+TS3_START_OPTIONS="" # Example: "default_voice_port=1234 voice_ip=111.222.333.444"
 
 # ==> MAIN PROGRAM <==
 set -e # exit with a non-zero status when there is an uncaught error
@@ -63,11 +64,11 @@ if wget -q $URL1; then
 elif wget -q $URL2; then
 	install_ts3-server
 else
-	echo -e "\n ERROR!!! Failed to download teamspeak3-server_linux\n"
+	echo -e "\n ERROR!!! Failed to download the TeamSpeak 3 server\n"
 	exit 1
 fi
 
-# install the init.d startup script
+# install the init.d start-up script
 touch /etc/init.d/ts3server
 cat > /etc/init.d/ts3server <<EOF
 #!/bin/bash
@@ -82,7 +83,8 @@ cat > /etc/init.d/ts3server <<EOF
 
 # Variables
 TS_USER=$TS3_USER
-TS_DAEMON=$TS_DIR/ts3server_startscript.sh
+TS_DAEMON=$TS3_DIR/ts3server_startscript.sh
+TS_OPTIONS="$TS3_START_OPTIONS"
 
 # Check if variables are set correctly
 A=\$(cat /etc/passwd | grep -c \$TS_USER:)
@@ -95,8 +97,8 @@ elif [ ! -f "\$TS_DAEMON" ]; then
     exit 1
 fi
 
-# Start the TeamSpeak 3 server
-sudo -u \$TS_USER \$TS_DAEMON \$1
+# Start the server
+sudo -u \$TS_USER \$TS_DAEMON \$1 \$TS_OPTIONS
 
 exit 0;
 EOF
@@ -109,10 +111,12 @@ echo "Starting the TeamSpeak 3 server..."
 sleep 3
 
 # finish
+EXTERNAL_IP=$(wget -qO - http://geoip.ubuntu.com/lookup | sed -n -e 's/.*<Ip>\(.*\)<\/Ip>.*/\1/p')
 IMPORTANT=$(cat /tmp/ts3 | sed '1,3d;9,13d;/^$/d')
-cat "$IMPORTANT" > $TS3_DIR/ServerAdmin_Privilege_Key.txt # save the ServerAdmin Privilege Key for easy future reference
+echo "$IMPORTANT" > $TS3_DIR/ServerAdmin_Privilege_Key.txt # save the ServerAdmin Privilege Key for easy future reference
 echo "ServerAdmin info saved to: '$TS3_DIR/ServerAdmin_Privilege_Key.txt'"
 echo -e "\n$IMPORTANT"
-echo -e "\nCompleted! You should probably reboot the system now\n"
+echo -e "\nCompleted! You should probably configure the server now, Use the desktop client for easy administration"
+echo -e "\nYour servers external IP Address is: '$EXTERNAL_IP'"
 rm /tmp/ts3
 exit 0
