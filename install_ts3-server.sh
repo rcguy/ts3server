@@ -108,7 +108,7 @@ chmod a+x /etc/init.d/ts3server
 update-rc.d ts3server defaults >/dev/null 2>&1
 echo "Starting the TeamSpeak 3 server..."
 /etc/init.d/ts3server start >/tmp/ts3 2>&1
-sleep 3
+sleep 5
 
 # finish
 EXTERNAL_IP=$(wget -qO - http://geoip.ubuntu.com/lookup | sed -n -e 's/.*<Ip>\(.*\)<\/Ip>.*/\1/p')
