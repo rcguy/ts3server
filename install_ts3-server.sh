@@ -6,10 +6,10 @@
 # Description: Automagically installs the Linux TeamSpeak 3 Server
 # Tested on: Ubuntu Server 14.10 / x64 / x86 / VPS / 2 Cores / 2GB RAM / 20 GB SSD
 
-# ==> USER VARIABLES <==
+# ==> VARIABLES <==
 # user to run the ts3server and where to install it
 TS3_USER="teamspeak3"
-TS3_DIR="/opt/ts3-server"
+TS3_DIR="/usr/local/ts3-server"
 TS3_START_OPTIONS="" # Example: "default_voice_port=1234 voice_ip=111.222.333.444"
 TS3_VER="3.0.11.4"
 
