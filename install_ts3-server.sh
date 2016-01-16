@@ -9,9 +9,9 @@
 # ==> VARIABLES <==
 # user to run the ts3server and where to install it
 TS3_USER="teamspeak3"
-TS3_DIR="/usr/local/ts3-server"
+TS3_DIR="/opt/ts3server"
 TS3_START_OPTIONS="" # Example: "default_voice_port=1234 voice_ip=111.222.333.444"
-TS3_VER="3.0.11.4"
+TS3_VER="3.0.18.2"
 
 # ==> MAIN PROGRAM <==
 set -e # exit with a non-zero status when there is an uncaught error
