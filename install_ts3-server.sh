@@ -11,7 +11,7 @@
 TS3_USER="teamspeak3"
 TS3_DIR="/opt/ts3server"
 TS3_START_OPTIONS="" # Example: "default_voice_port=1234 voice_ip=111.222.333.444"
-TS3_VER="3.0.18.2"
+TS3_VER="3.0.12"
 
 # ==> MAIN PROGRAM <==
 set -e # exit with a non-zero status when there is an uncaught error
@@ -22,11 +22,11 @@ if	[ "$EUID" -ne 0 ]; then
 	exit 1
 fi
 
-# official download urls - updated on: 8/27/2015
-X64_M1="http://dl.4players.de/ts/releases/$TS3_VER/teamspeak3-server_linux-amd64-$TS3_VER.tar.gz"
-X64_M2="http://teamspeak.gameserver.gamed.de/ts3/releases/$TS3_VER/teamspeak3-server_linux-amd64-$TS3_VER.tar.gz"
-X86_M1="http://dl.4players.de/ts/releases/$TS3_VER/teamspeak3-server_linux-x86-$TS3_VER.tar.gz"
-X86_M2="http://teamspeak.gameserver.gamed.de/ts3/releases/$TS3_VER/teamspeak3-server_linux-x86-$TS3_VER.tar.gz"
+# official download urls - updated on: 2/2/2016
+X64_M1="http://dl.4players.de/ts/releases/$TS3_VER/teamspeak3-server_linux_amd64-$TS3_VER.tar.bz2"
+X64_M2="http://teamspeak.gameserver.gamed.de/ts3/releases/$TS3_VER/teamspeak3-server_linux_amd64-$TS3_VER.tar.bz2"
+X86_M1="http://dl.4players.de/ts/releases/$TS3_VER/teamspeak3-server_linux_x86-$TS3_VER.tar.bz2"
+X86_M2="http://teamspeak.gameserver.gamed.de/ts3/releases/$TS3_VER/teamspeak3-server_linux_x86-$TS3_VER.tar.bz2"
 
 # check if we need 64bit or 32bit binaries
 A=$(arch)
@@ -44,10 +44,10 @@ fi
 # functions
 function install_ts3-server {
 mkdir -p $TS3_DIR
-tar -xzf teamspeak3-server_linux*.tar.gz
+tar -xvjf teamspeak3-server_linux*.tar.bz2
 mv teamspeak3-server_linux*/* $TS3_DIR
 chown $TS3_USER:$TS3_USER $TS3_DIR -R
-rm -rf teamspeak3-server_linux*.tar.gz teamspeak3-server_linux-*/
+rm -rf teamspeak3-server_linux*.tar.bz2 teamspeak3-server_linux-*/
 }
 
 # add the user to run ts3server
