@@ -1,17 +1,17 @@
 #!/bin/bash
 # Name: install_ts3-server.sh
-# Version: 1.0
+# Version: 1.1
 # Created On: 3/5/2015
+# Updated On: 11/24/2018
 # Created By: rcguy
 # Description: Automagically installs the Linux TeamSpeak 3 Server
-# Tested on: Ubuntu Server 14.10 / x64 / x86 / VPS / 2 Cores / 2GB RAM / 20 GB SSD
+# Tested on: Debian 9 / x64 / VPS / 2 Cores / 2GB RAM / 20 GB SSD
 
 # ==> VARIABLES <==
 # user to run the ts3server and where to install it
 TS3_USER="teamspeak3"
 TS3_DIR="/opt/ts3server"
-TS3_START_OPTIONS="" # Example: "default_voice_port=1234 voice_ip=111.222.333.444"
-TS3_VER="3.0.12"
+TS3_VER="3.5.0"
 
 # ==> MAIN PROGRAM <==
 set -e # exit with a non-zero status when there is an uncaught error
@@ -22,7 +22,7 @@ if	[ "$EUID" -ne 0 ]; then
 	exit 1
 fi
 
-# official download urls - updated on: 2/2/2016
+# official download urls - updated on: 11/24/2018
 X64_M1="http://dl.4players.de/ts/releases/$TS3_VER/teamspeak3-server_linux_amd64-$TS3_VER.tar.bz2"
 X64_M2="http://teamspeak.gameserver.gamed.de/ts3/releases/$TS3_VER/teamspeak3-server_linux_amd64-$TS3_VER.tar.bz2"
 X86_M1="http://dl.4players.de/ts/releases/$TS3_VER/teamspeak3-server_linux_x86-$TS3_VER.tar.bz2"
@@ -44,10 +44,11 @@ fi
 # functions
 function install_ts3-server {
 mkdir -p $TS3_DIR
-tar -xvjf teamspeak3-server_linux*.tar.bz2
+touch $TS3_DIR/.ts3server_license_accepted
+tar -xjf teamspeak3-server_linux*.tar.bz2
 mv teamspeak3-server_linux*/* $TS3_DIR
 chown $TS3_USER:$TS3_USER $TS3_DIR -R
-rm -rf teamspeak3-server_linux*.tar.bz2 teamspeak3-server_linux-*/
+rm -rf teamspeak3-server_linux*.tar.bz2 teamspeak3-server_linux*/
 }
 
 # add the user to run ts3server
@@ -70,54 +71,68 @@ else
 fi
 
 # install the init.d start-up script
-touch /etc/init.d/ts3server
-cat > /etc/init.d/ts3server <<EOF
-#!/bin/bash
-### BEGIN INIT INFO
-# Provides: ts3server
-# Required-Start: \$network
-# Required-Stop: \$network
-# Default-Start: 2 3 4 5
-# Default-Stop: 0 1 6
-# Description: Runs the ts3server_startscript.sh as the user defined below
-### END INIT INFO
+touch /etc/systemd/system/ts3server.service
+cat > /etc/systemd/system/ts3server.service <<EOF
+[Unit]
+Description=TeamSpeak3 Server
+Wants=network-online.target
+After=syslog.target network.target
 
-# Variables
-TS_USER=$TS3_USER
-TS_DAEMON=$TS3_DIR/ts3server_startscript.sh
-TS_OPTIONS="$TS3_START_OPTIONS"
+[Service]
+WorkingDirectory=$TS3_DIR
+User=$TS3_USER
+Group=$TS3_USER
+Type=forking
+ExecStart=$TS3_DIR/ts3server_startscript.sh start inifile=$TS3_DIR/ts3server.ini
+ExecStop=$TS3_DIR/ts3server_startscript.sh stop
+ExecReload=$TS3_DIR/ts3server_startscript.sh reload
+PIDFile=$TS3_DIR/ts3server.pid
 
-# Check if variables are set correctly
-A=\$(cat /etc/passwd | grep -c \$TS_USER:)
-
-if [ \$? -ne 0 ]; then
-    echo -e "\n ERROR!!! The user '\$TS_USER' does not exist!\n"
-    exit 1
-elif [ ! -f "\$TS_DAEMON" ]; then
-    echo -e "\n ERROR!!! The daemon '\$TS_DAEMON' does not exist!\n"
-    exit 1
-fi
-
-# Start the server
-sudo -u \$TS_USER \$TS_DAEMON \$1 \$TS_OPTIONS
-
-exit 0;
+[Install]
+WantedBy=multi-user.target
 EOF
 
+# install a default ts3server.ini
+touch $TS3_DIR/ts3server.ini
+cat > $TS3_DIR/ts3server.ini <<EOF
+#The path of the *.ini file to use.
+inifile=ts3server.ini
+
+# The Voice IP that your Virtual Servers are listing on. [UDP] (Default: 0.0.0.0)
+voice_ip=
+
+# The Query IP that your Instance is listing on. [TCP] (Default: 0.0.0.0)
+query_ip=0.0.0.0
+
+# The Filetransfer IP that your Instance is listing on. [TCP] (Default: 0.0.0.0)
+filetransfer_ip=
+
+# The Voice Port that your default Virtual Server is listing on. [UDP] (Default: 9987)
+default_voice_port=9987
+
+# The Query Port that your Instance is listing on. [TCP] (Default: 10011)
+query_port=10011
+
+# The Filetransfer Port that your Instance is listing on. [TCP] (Default: 30033)
+filetransfer_port=30033
+
+# Use the same log file
+logappend=1
+EOF
+chown $TS3_USER:$TS3_USER $TS3_DIR/ts3server.ini
+
 # start the ts3server to generate the ServerAdmin Privilege Key
-chmod a+x /etc/init.d/ts3server
-update-rc.d ts3server defaults >/dev/null 2>&1
 echo "Starting the TeamSpeak 3 server..."
-/etc/init.d/ts3server start >/tmp/ts3 2>&1
+systemctl enable ts3server.service
+systemctl start ts3server.service
 sleep 5
 
 # finish
 EXTERNAL_IP=$(wget -qO - http://geoip.ubuntu.com/lookup | sed -n -e 's/.*<Ip>\(.*\)<\/Ip>.*/\1/p')
-IMPORTANT=$(cat /tmp/ts3 | sed '1,3d;9,13d;/^$/d')
+IMPORTANT=$(cat $TS3_DIR/logs/*_1.log | grep -P -o "token=[a-zA-z0-9+]+")
 echo "$IMPORTANT" > $TS3_DIR/ServerAdmin_Privilege_Key.txt # save the ServerAdmin Privilege Key for easy future reference
 echo "ServerAdmin info saved to: '$TS3_DIR/ServerAdmin_Privilege_Key.txt'"
-echo -e "\n$IMPORTANT\n"
+echo -e "\nServerAdmin Privilege Key: $IMPORTANT\n"
 echo -e "Completed! You should probably configure the server now\nUse the desktop client for easy administration"
 echo -e "Your servers external IP Address is: '$EXTERNAL_IP'\n"
-rm /tmp/ts3
 exit 0
