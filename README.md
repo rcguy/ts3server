@@ -1,8 +1,8 @@
-##Auto Install the Linux TeamSpeak 3 Server on Ubuntu
+## Auto Install the Linux TeamSpeak 3 Server on Debian / Ubuntu
 ### What this script does:
 - Creates a new user to run the TeamSpeak 3 Server
 - Downloads and installs the server
-- Creates an init.d start-up script
+- Creates a systemd service
 - Starts the server
 
 ### How to use:
@@ -24,5 +24,5 @@ sudo ./install_ts3-server.sh
 ```
 To start, stop, restart, or check the status of the ts3-server use
 ```bash
-sudo service ts3server {start|stop|restart|status}
+sudo systemctl {start|stop|restart|status} ts3server 
 ```
