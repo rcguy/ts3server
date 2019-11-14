@@ -1,8 +1,8 @@
 #!/bin/bash
 # Name: install_ts3-server.sh
-# Version: 1.1
+# Version: 1.2
 # Created On: 3/5/2015
-# Updated On: 11/24/2018
+# Updated On: 11/13/2019
 # Created By: rcguy
 # Description: Automagically installs the Linux TeamSpeak 3 Server
 # Tested on: Debian 9 / x64 / VPS / 2 Cores / 2GB RAM / 20 GB SSD
@@ -11,7 +11,7 @@
 # user to run the ts3server and where to install it
 TS3_USER="teamspeak3"
 TS3_DIR="/opt/ts3server"
-TS3_VER="3.5.0"
+TS3_VER="3.10.0"
 
 # ==> MAIN PROGRAM <==
 set -e # exit with a non-zero status when there is an uncaught error
