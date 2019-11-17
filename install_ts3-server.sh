@@ -72,14 +72,14 @@ Wants=network-online.target
 After=syslog.target network.target
 
 [Service]
-WorkingDirectory="$TS3_DIR"
-User="$TS3_USER"
-Group="$TS3_USER"
+WorkingDirectory= $TS3_DIR
+User=$TS3_USER
+Group=$TS3_USER
 Type=forking
-ExecStart="$TS3_DIR"/ts3server_startscript.sh start inifile="$TS3_DIR"/ts3server.ini
-ExecStop="$TS3_DIR"/ts3server_startscript.sh stop
-ExecReload="$TS3_DIR"/ts3server_startscript.sh reload
-PIDFile="$TS3_DIR"/ts3server.pid
+ExecStart= $TS3_DIR/ts3server_startscript.sh start inifile= $TS3_DIR/ts3server.ini
+ExecStop= $TS3_DIR/ts3server_startscript.sh stop
+ExecReload= $TS3_DIR/ts3server_startscript.sh reload
+PIDFile= $TS3_DIR/ts3server.pid
 
 [Install]
 WantedBy=multi-user.target
@@ -92,7 +92,7 @@ cat > "$TS3_DIR"/ts3server.ini <<EOF
 inifile=ts3server.ini
 
 # The Voice IP that your Virtual Servers are listing on. [UDP] (Default: 0.0.0.0)
-voice_ip=
+voice_ip=0.0.0.0
 
 # The Query IP that your Instance is listing on. [TCP] (Default: 0.0.0.0)
 query_ip=0.0.0.0
