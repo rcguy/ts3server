@@ -17,9 +17,9 @@ TS3_VER="3.10.0"
 set -e # exit with a non-zero status when there is an uncaught error
 
 # are we root?
-if	[ "$EUID" -ne 0 ]; then
-	echo -e "\nERROR!!! SCRIPT MUST RUN WITH ROOT PRIVILAGES\n"
-	exit 1
+if  [ "$EUID" -ne 0 ]; then
+  echo -e "\nERROR!!! SCRIPT MUST RUN WITH ROOT PRIVILAGES\n"
+  exit 1
 fi
 
 # official download urls - updated on: 11/17/2019
@@ -29,38 +29,38 @@ X64="https://files.teamspeak-services.com/releases/server/$TS3_VER/teamspeak3-se
 # check if we need 64bit or 32bit binaries
 A=$(arch)
 if [ "$A" = "x86_64" ]; then
-	URL="$X64"
+  URL="$X64"
 elif [ "$A" = "i386" ]; then
-	URL="$X86"
+  URL="$X86"
 elif [ "$A" = "i686" ]; then
-	URL="$X86"
+  URL="$X86"
 fi
 
 # functions
 function install_ts3-server {
-mkdir -p $TS3_DIR
-touch $TS3_DIR/.ts3server_license_accepted
+mkdir -p "$TS3_DIR"
+touch "$TS3_DIR"/.ts3server_license_accepted
 tar -xjf teamspeak3-server_linux*.tar.bz2
-mv teamspeak3-server_linux*/* $TS3_DIR
-chown $TS3_USER:$TS3_USER $TS3_DIR -R
+mv teamspeak3-server_linux*/* "$TS3_DIR"
+chown "$TS3_USER":"$TS3_USER" "$TS3_DIR" -R
 rm -rf teamspeak3-server_linux*.tar.bz2 teamspeak3-server_linux*/
 }
 
 # add the user to run ts3server
-if adduser --system --group --disabled-login --disabled-password --no-create-home $TS3_USER >/dev/null 2>&1; then
-	echo -e "\nAdded new user: '$TS3_USER'"
+if adduser --system --group --disabled-login --disabled-password --no-create-home "$TS3_USER" >/dev/null 2>&1; then
+  echo -e "\nAdded new user: '$TS3_USER'"
 else
-	echo -e "\n ERROR!!! Failed to add new user: '$TS3_USER'\n"
-	exit 1
+  echo -e "\n ERROR!!! Failed to add new user: '$TS3_USER'\n"
+  exit 1
 fi
 
 # download and install the ts3server
 echo "Installing the TeamSpeak 3 server to: '$TS3_DIR'"
-if wget -q $URL; then
-	install_ts3-server
+if wget -q "$URL"; then
+  install_ts3-server
 else
-	echo -e "\n ERROR!!! Failed to download the TeamSpeak 3 server\n"
-	exit 1
+  echo -e "\n ERROR!!! Failed to download the TeamSpeak 3 server\n"
+  exit 1
 fi
 
 # install the init.d start-up script
@@ -72,22 +72,22 @@ Wants=network-online.target
 After=syslog.target network.target
 
 [Service]
-WorkingDirectory=$TS3_DIR
-User=$TS3_USER
-Group=$TS3_USER
+WorkingDirectory="$TS3_DIR"
+User="$TS3_USER"
+Group="$TS3_USER"
 Type=forking
-ExecStart=$TS3_DIR/ts3server_startscript.sh start inifile=$TS3_DIR/ts3server.ini
-ExecStop=$TS3_DIR/ts3server_startscript.sh stop
-ExecReload=$TS3_DIR/ts3server_startscript.sh reload
-PIDFile=$TS3_DIR/ts3server.pid
+ExecStart="$TS3_DIR"/ts3server_startscript.sh start inifile="$TS3_DIR"/ts3server.ini
+ExecStop="$TS3_DIR"/ts3server_startscript.sh stop
+ExecReload="$TS3_DIR"/ts3server_startscript.sh reload
+PIDFile="$TS3_DIR"/ts3server.pid
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
 # install a default ts3server.ini
-touch $TS3_DIR/ts3server.ini
-cat > $TS3_DIR/ts3server.ini <<EOF
+touch "$TS3_DIR"/ts3server.ini
+cat > "$TS3_DIR"/ts3server.ini <<EOF
 #The path of the *.ini file to use.
 inifile=ts3server.ini
 
@@ -112,20 +112,20 @@ filetransfer_port=30033
 # Use the same log file
 logappend=1
 EOF
-chown $TS3_USER:$TS3_USER $TS3_DIR/ts3server.ini
+chown "$TS3_USER":"$TS3_USER" "$TS3_DIR"/ts3server.ini
 
 # start the ts3server to generate the ServerAdmin Privilege Key
-echo "Starting the TeamSpeak 3 server..."
-systemctl enable ts3server.service
+echo "Starting the TeamSpeak 3 server"
+systemctl --quiet enable ts3server.service
 systemctl start ts3server.service
 sleep 5
 
 # finish
 EXTERNAL_IP=$(wget -qO - http://geoip.ubuntu.com/lookup | sed -n -e 's/.*<Ip>\(.*\)<\/Ip>.*/\1/p')
-IMPORTANT=$(cat $TS3_DIR/logs/*_1.log | grep -P -o "token=[a-zA-z0-9+]+")
-echo "$IMPORTANT" > $TS3_DIR/ServerAdmin_Privilege_Key.txt # save the ServerAdmin Privilege Key for easy future reference
-echo "ServerAdmin info saved to: '$TS3_DIR/ServerAdmin_Privilege_Key.txt'"
-echo -e "\nServerAdmin Privilege Key: $IMPORTANT\n"
-echo -e "Completed! You should probably configure the server now\nUse the desktop client for easy administration"
-echo -e "Your servers external IP Address is: '$EXTERNAL_IP'\n"
+IMPORTANT=$(cat "$TS3_DIR"/logs/*_1.log | grep -P -o "token=[a-zA-z0-9+]+")
+echo "$IMPORTANT" > "$TS3_DIR"/ServerAdmin_Privilege_Key.txt # save the ServerAdmin Privilege Key for easy future reference
+echo -e "\nServerAdmin info saved to: '$TS3_DIR/ServerAdmin_Privilege_Key.txt'"
+echo -e "ServerAdmin Privilege Key: $IMPORTANT\n"
+echo -e "Completed! You should probably configure the server now\nUse the desktop client for easy administration\n"
+echo -e "Your servers external IP Address is: $EXTERNAL_IP\n"
 exit 0
