@@ -1,11 +1,11 @@
 #!/bin/bash
 # Name: install_ts3-server.sh
-# Version: 1.2
+# Version: 1.3
 # Created On: 3/5/2015
-# Updated On: 11/13/2019
+# Updated On: 11/17/2019
 # Created By: rcguy
 # Description: Automagically installs the Linux TeamSpeak 3 Server
-# Tested on: Debian 9 / x64 / VPS / 2 Cores / 2GB RAM / 20 GB SSD
+# Tested on: Debian 10 / x64 / VPS / 2 Cores / 2GB RAM / 20 GB SSD
 
 # ==> VARIABLES <==
 # user to run the ts3server and where to install it
@@ -22,23 +22,18 @@ if	[ "$EUID" -ne 0 ]; then
 	exit 1
 fi
 
-# official download urls - updated on: 11/24/2018
-X64_M1="http://dl.4players.de/ts/releases/$TS3_VER/teamspeak3-server_linux_amd64-$TS3_VER.tar.bz2"
-X64_M2="http://teamspeak.gameserver.gamed.de/ts3/releases/$TS3_VER/teamspeak3-server_linux_amd64-$TS3_VER.tar.bz2"
-X86_M1="http://dl.4players.de/ts/releases/$TS3_VER/teamspeak3-server_linux_x86-$TS3_VER.tar.bz2"
-X86_M2="http://teamspeak.gameserver.gamed.de/ts3/releases/$TS3_VER/teamspeak3-server_linux_x86-$TS3_VER.tar.bz2"
+# official download urls - updated on: 11/17/2019
+X86="https://files.teamspeak-services.com/releases/server/$TS3_VER/teamspeak3-server_linux_x86-$TS3_VER.tar.bz2"
+X64="https://files.teamspeak-services.com/releases/server/$TS3_VER/teamspeak3-server_linux_amd64-$TS3_VER.tar.bz2"
 
 # check if we need 64bit or 32bit binaries
 A=$(arch)
 if [ "$A" = "x86_64" ]; then
-	URL1="$X64_M1"
-	URL2="$X64_M2"
+	URL="$X64"
 elif [ "$A" = "i386" ]; then
-	URL1="$X86_M1"
-	URL2="$X86_M2"
+	URL="$X86"
 elif [ "$A" = "i686" ]; then
-	URL1="$X86_M1"
-	URL2="$X86_M2"
+	URL="$X86"
 fi
 
 # functions
@@ -61,9 +56,7 @@ fi
 
 # download and install the ts3server
 echo "Installing the TeamSpeak 3 server to: '$TS3_DIR'"
-if wget -q $URL1; then
-	install_ts3-server
-elif wget -q $URL2; then
+if wget -q $URL; then
 	install_ts3-server
 else
 	echo -e "\n ERROR!!! Failed to download the TeamSpeak 3 server\n"
